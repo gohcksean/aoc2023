@@ -9,12 +9,10 @@ vector<string> readData() {
     ifstream file;
     file.open("input.txt");
     vector<string> data{};
-    while (!file.eof()) {
-        string line;
-        getline(file, line);
+    string line;
+    while (getline(file, line)) {
         data.push_back(line);
     }
-    file.close();
     return data;
 }
 
