@@ -6,8 +6,14 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <cmath>
 
-std::vector<std::string> ssplit(std::string line, char delimiter) {
+std::vector<std::string> ssplit
+(
+    const std::string& line, 
+    const char& delimiter
+) 
+{
     std::stringstream ss(line);
     std::vector<std::string> tokens{};
     std::string token;
@@ -24,7 +30,8 @@ struct Game {
     Game(std::unordered_set<int> w, std::vector<int>p) : winningNumbers(w), presentNumbers(p) {};
 };
 
-std::vector<Game> readData() {
+std::vector<Game> readData() 
+{
     std::ifstream file;
     file.open("input.txt");
     std::vector<Game> data{};
@@ -49,25 +56,11 @@ std::vector<Game> readData() {
     return data;
 }
 
-int calculateTotalPoints
+int countMatches
 (
-    const std::vector<Game>& games
-)
+    const Game& game
+) 
 {
-    int totalPoints{0};
-    for (auto game: games) {
-        int currPoints{0};
-        for (auto num: game.presentNumbers) {
-            if (game.winningNumbers.find(num) != game.winningNumbers.end()) {
-                currPoints = currPoints == 0 ? 1 : currPoints * 2;
-            }
-        }
-        totalPoints += currPoints;
-    }
-    return totalPoints;
-}
-
-int countMatches(const Game& game) {
     int matches{0};
     for (auto num: game.presentNumbers) {
         if (game.winningNumbers.find(num) != game.winningNumbers.end()) {
@@ -75,6 +68,19 @@ int countMatches(const Game& game) {
         }
     }
     return matches;
+}
+
+int calculateTotalPoints
+(
+    const std::vector<Game>& games
+)
+{
+    int totalPoints{0};
+    for (auto game: games) {
+        auto matches{countMatches(game)};
+        totalPoints += std::pow(2, matches-1);
+    }
+    return totalPoints;
 }
 
 int calculateTotalCards
